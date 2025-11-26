@@ -1,13 +1,16 @@
-FROM python:3.8
+FROM python:3.10-slim
 
 WORKDIR /src
 
 COPY . /src/
 
-RUN chmod +x init_env.sh ;\
-    chmod +x build.sh ;\
-    set -e ;\
-    ./init_env.sh ;\
-    ./build.sh
+RUN python -m pip install --upgrade pip ;\
+    python -m pip install -r requirements.txt --no-cache-dir ;\
+    python -m pip install uvicorn pytest ;\
+    python -m pip install . --no-cache-dir
+
+RUN echo "{}" > `python -c "import sysconfig; print(sysconfig.get_path('purelib'))"`/zvt/config.json
+
+EXPOSE 8050
 
 CMD ["zvt"]
